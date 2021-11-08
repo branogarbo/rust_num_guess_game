@@ -1,7 +1,8 @@
 mod game;
+use game::Game;
 
 fn main() {
-    let mut g = game::Game::new();
+    let mut guesser = Game::new();
 
-    g.run();
+    guesser.run();
 }

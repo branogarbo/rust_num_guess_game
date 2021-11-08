@@ -1,10 +1,10 @@
+use colored::*;
 use rand::Rng;
 use std::io;
 
 pub struct Game {
    rounds: i64,
 }
-
 impl Game {
    pub fn new() -> Self {
       Self { rounds: 0 }
@@ -14,20 +14,26 @@ impl Game {
       let rand_num = rand::thread_rng().gen_range(0..=10);
       let mut input_num: i8;
 
-      println!("Guess a number between 0 and 10");
+      println!("🎲 Guess a number between 0 and 10 🎲");
 
       loop {
-         input_num = get_input_i8();
+         match get_input_i8() as Result<i8, String> {
+            Ok(num) => input_num = num,
+            Err(err) => {
+               println!("{}", err.yellow());
+               continue;
+            }
+         }
 
          self.rounds += 1;
 
          if input_num == rand_num {
-            println!("Correct!");
+            println!("{}", "Correct! 🎉".green());
             break;
          } else if input_num < rand_num {
-            println!("Higher!");
+            println!("{}", "Higher!".red());
          } else if input_num > rand_num {
-            println!("Lower!");
+            println!("{}", "Lower!".red());
          }
       }
 
@@ -35,8 +41,13 @@ impl Game {
    }
 
    fn game_over(&mut self) {
-      println!("It took you {} tries!", self.rounds);
-      println!("Want to play again? [Y/n]");
+      if self.rounds == 1 {
+         println!("It took you 1 try!")
+      } else {
+         println!("It took you {} tries!", self.rounds);
+      }
+
+      println!("Play again? [Y/n]");
 
       let input_play_again = get_input_string();
 
@@ -44,6 +55,8 @@ impl Game {
          let mut new_game = Self::new();
 
          new_game.run();
+      } else {
+         println!("Thanks for playing! 🤙");
       }
    }
 }
@@ -56,8 +69,11 @@ fn get_input_string() -> String {
    return input.trim().to_string();
 }
 
-fn get_input_i8() -> i8 {
+fn get_input_i8() -> Result<i8, String> {
    let i = get_input_string();
 
-   return i.parse().unwrap();
+   match i.parse() {
+      Ok(num) => return Ok(num),
+      Err(_) => return Err("⚠️  Please enter a valid input ⚠️".to_string()),
+   }
 }
