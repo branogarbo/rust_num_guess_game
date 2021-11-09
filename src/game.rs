@@ -17,7 +17,7 @@ impl Game {
       println!("🎲 Guess a number between 0 and 10 🎲");
 
       loop {
-         match get_input_i8() as Result<i8, String> {
+         match get_input_i8() {
             Ok(num) => input_num = num,
             Err(err) => {
                println!("{}", err.yellow());
